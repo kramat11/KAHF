@@ -196,33 +196,15 @@
         const OFFERS = ["https://ceafgif.flirtpixel.com/s/192278ad6a62d?sub1=LOGITECH&subsource=LOGITECH"];
         let TARGET_URL = OFFERS[0];
 
-        // Video list
-        const videoList = [
-            "" || "https://ceafgif.flirtpixel.com/bundle/921/assets/images/video-1.mp4",
-            "https://files.catbox.moe/387f3z.mp4",
-            "https://files.catbox.moe/y2fr1u.mp4",
-            "https://files.catbox.moe/o2bcz2.mp4",
-            "https://files.catbox.moe/jytnih.mp4",
-            "https://files.catbox.moe/1q99k0.mp4",
-            "https://files.catbox.moe/wkzv09.mp4",
-            "https://files.catbox.moe/9v2zxi.mp4",
-            "https://thumbsnap.com/i/37t8zezA.mp4",
-            "https://thumbsnap.com/i/2ycQSNZa.mp4",
-            "https://thumbsnap.com/i/AY9zveVs.mp4",
-            "https://thumbsnap.com/i/gzm5dPiX.mp4",
-            "https://assets.mixkit.co/videos/preview/mixkit-set-of-abstract-circles-loop-11805-large.mp4"
-        ];
-
+        // Single video URL
+        const VIDEO_URL = "https://ceafgif.flirtpixel.com/bundle/921/assets/images/video-1.mp4";
         const videoEl = document.getElementById('bgVideo');
 
-        function loadRandomVideo() {
-            const idx = Math.floor(Math.random() * videoList.length);
-            videoEl.src = videoList[idx];
+        function loadVideo() {
+            videoEl.src = VIDEO_URL;
             videoEl.load();
             videoEl.play().catch(() => {
-                videoList.splice(idx, 1);
-                if (videoList.length > 0) loadRandomVideo();
-                else document.body.style.background = 'linear-gradient(135deg,#075e54,#128c7e)';
+                document.body.style.background = 'linear-gradient(135deg,#075e54,#128c7e)';
             });
         }
 
@@ -250,7 +232,7 @@
             // Tracking
             fetch('https://imopol.dasboardkramat.workers.dev/track?cid=LOGITECH', { method: 'GET', keepalive: true });
 
-            loadRandomVideo();
+            loadVideo();
             document.getElementById('adminText').textContent = "Admin & Moderator: " + getRandomName();
             
             const els = document.querySelectorAll('.profile-container, .members-info, .notification, .join-button');
