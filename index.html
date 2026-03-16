@@ -3,481 +3,557 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Live Call - private chat</title>
+    <title>EliteMatch - Private Access</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Elegan: Playfair Display untuk Judul, Plus Jakarta Sans untuk UI -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📹</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
     <style>
-        /* --- VARIABLES & RESET --- */
         :root {
-            --primary: #7b2cbf;
-            --secondary: #3a0ca3;
-            --accent: #4cc9f0;
-            --danger: #ef233c;
-            --success: #06d6a0;
-            --dark: #0a001a;
-            --glass: rgba(20, 20, 35, 0.65);
-            --glass-heavy: rgba(10, 10, 20, 0.85);
-            --border: rgba(255, 255, 255, 0.1);
+            /* TEMA BARU: LUXURY BLACK & GOLD */
+            --primary: #D4AF37;       /* Emas Metalik */
+            --primary-hover: #b5952f;
+            --bg-dark: #000000;       /* Hitam Total */
+            --bg-panel: #0a0a0a;      /* Hitam Abu */
+            --bg-card: #121212;
+            --border: rgba(212, 175, 55, 0.2);
+            --border-solid: rgba(212, 175, 55, 0.5);
+            --text: #ffffff;
+            --text-muted: #a1a1aa;
+            --online: #D4AF37; /* Online Indikator Emas */
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--dark);
-            color: #fff;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            display: flex;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            /* Pattern halus background */
+            background-image: radial-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
         }
 
-        /* --- LAYOUT SPLIT SCREEN --- */
+        /* --- LAYOUT GRID --- */
         .app-container {
-            display: flex;
-            width: 100%;
-            height: 100%;
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            min-height: 100vh;
             position: relative;
-        }
-
-        /* --- LEFT SIDE: VIDEO FEED (The "Caller") --- */
-        .video-feed-side {
-            flex: 1.5; /* Lebih lebar */
-            position: relative;
-            background: #000;
-            overflow: hidden;
-        }
-
-        .caller-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.8;
-            transform: scale(1.05); /* Sedikit zoom untuk menghilangkan border hitam */
-        }
-
-        /* Overlay pada Video */
-        .video-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6) 100%);
             z-index: 2;
-            pointer-events: none;
         }
 
-        .live-badge {
-            position: absolute;
-            top: 20px; left: 20px;
-            background: rgba(239, 35, 60, 0.8);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 4px;
+        /* --- HEADER --- */
+        .header {
+            grid-column: 1 / -1;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 1px solid var(--border);
+            padding: 0 30px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--primary);
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .header-btn {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 8px 24px;
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            display: flex; align-items: center; gap: 6px;
-            z-index: 3;
-            backdrop-filter: blur(4px);
-        }
-        .rec-dot {
-            width: 8px; height: 8px; background: #fff; border-radius: 50%;
-            animation: blink 1.5s infinite;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .connection-status {
-            position: absolute;
-            top: 20px; right: 20px;
-            display: flex; align-items: center; gap: 5px;
-            font-size: 11px; color: rgba(255,255,255,0.8);
-            z-index: 3;
-            background: rgba(0,0,0,0.4);
-            padding: 4px 8px; border-radius: 12px;
+        .header-btn:hover {
+            background: var(--primary);
+            color: black;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
         }
 
-        /* --- RIGHT SIDE: CALL INTERFACE (Controls) --- */
-        .interface-side {
+        /* --- SIDEBAR KIRI --- */
+        .sidebar-left {
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .filter-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .user-list {
             flex: 1;
-            background: var(--glass-heavy);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .user-item:hover {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .user-item.active {
+            background: rgba(212, 175, 55, 0.05);
+            border-left: 2px solid var(--primary);
+        }
+
+        .user-avatar {
+            position: relative;
+        }
+
+        .user-avatar img {
+            width: 45px;
+            height: 45px;
+            /* Bentuk persegi dengan sudut sedikit rounded (tumpul) */
+            border-radius: 6px; 
+            object-fit: cover;
+            filter: grayscale(20%); /* Efek elegan */
+            transition: 0.3s;
+        }
+
+        .user-item:hover .user-avatar img {
+            filter: grayscale(0%);
+        }
+
+        .user-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .user-info p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .vip-tag {
+            font-size: 9px;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 1px 4px;
+            border-radius: 2px;
+            margin-left: 5px;
+            text-transform: uppercase;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
+        }
+
+        .luxury-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 50px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            /* Efek bayangan emas halus */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+        }
+
+        .luxury-card::before, .luxury-card::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--primary);
+            transition: all 0.5s;
+        }
+
+        .luxury-card::before { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .luxury-card::after { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--text);
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .card-subtitle {
+            color: var(--primary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 20px 0;
+        }
+
+        .main-text {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .verify-box {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .verify-btn {
+            width: 100%;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 18px;
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .verify-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(255,255,255,0.2), transparent);
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .verify-btn:hover::after { opacity: 1; }
+        .verify-btn:hover {
+            background: #fff;
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .skip-link {
+            color: var(--text-muted);
+            font-size: 11px;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* --- SIDEBAR KANAN --- */
+        .sidebar-right {
+            background: var(--bg-panel);
             border-left: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            justify-content: center;
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            padding: 30px;
-            z-index: 10;
-            position: relative;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
         }
 
-        /* Profile dalam Interface */
-        .caller-profile-card {
-            text-align: center;
-            margin-bottom: 40px;
-            animation: float 6s ease-in-out infinite;
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .profile-ring-anim {
-            width: 120px; height: 120px;
-            border-radius: 50%;
-            padding: 4px;
-            background: conic-gradient(from 0deg, var(--primary), var(--accent), var(--primary));
-            margin: 0 auto 15px auto;
-            position: relative;
-            display: flex; justify-content: center; align-items: center;
-            animation: spinBorder 4s linear infinite;
-        }
-        
-        .profile-img-small {
-            width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
-            border: 4px solid var(--dark);
-            background: #222;
+        .user-status img {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            border: 1px solid var(--primary);
         }
 
-        .caller-name { font-size: 24px; font-weight: 700; margin-bottom: 5px; color: #fff; }
-        .caller-status { font-size: 14px; color: var(--accent); display: flex; align-items: center; justify-content: center; gap: 8px; }
-        
-        /* Chat Preview Bubble */
-        .chat-bubble {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            padding: 10px 15px;
-            border-radius: 0 15px 15px 15px;
-            font-size: 13px;
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 5px;
-            max-width: 220px;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: left;
-            position: relative;
-        }
-        .chat-bubble::after {
-            content:''; position: absolute; top:0; left:-6px;
-            width:0; height:0; border-top:10px solid transparent;
-            border-bottom:0px solid transparent; border-right:10px solid rgba(255,255,255,0.05);
-        }
+        .status-text h4 { font-size: 14px; color: var(--text); }
+        .status-text span { font-size: 11px; color: var(--primary); letter-spacing: 1px; }
 
-        /* --- ACTION BUTTONS --- */
-        .call-actions {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr 1fr;
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
             gap: 15px;
-            width: 100%;
-            max-width: 320px;
-            align-items: center;
         }
 
-        .control-btn {
-            width: 55px; height: 55px;
-            border-radius: 50%;
-            border: none;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-        .control-btn:active { transform: scale(0.9); }
-
-        /* Main Answer Button */
-        .answer-btn {
-            grid-column: 2;
-            width: 80px; height: 80px;
-            background: linear-gradient(135deg, var(--success), #059669);
-            border-radius: 50%;
-            box-shadow: 0 0 20px rgba(6, 214, 160, 0.4);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        .bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            font-size: 13px;
+            line-height: 1.5;
             position: relative;
-            z-index: 2;
-        }
-        .answer-btn span { font-size: 10px; font-weight: 600; margin-top: 2px; text-transform: uppercase; }
-        .answer-btn::before {
-            content: ''; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
-            border-radius: 50%; border: 2px solid var(--success);
-            opacity: 0; animation: pulseRing 2s infinite;
         }
 
-        .decline-btn { background: var(--danger); }
-
-        /* --- TOAST NOTIFICATIONS (Video Call Style) --- */
-        .toast-wrapper {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            z-index: 100; display: flex; flex-direction: column; gap: 10px;
-            width: 90%; max-width: 400px; pointer-events: none;
+        .bubble-left {
+            background: #1a1a1a;
+            color: var(--text);
+            align-self: flex-start;
+            border-left: 2px solid var(--primary);
         }
-        
-        .call-toast {
-            background: rgba(20, 20, 35, 0.95);
-            backdrop-filter: blur(12px);
+
+        .bubble-right {
+            background: var(--primary);
+            color: #000;
+            align-self: flex-end;
+            font-weight: 500;
+        }
+
+        .bubble img {
+            width: 100%;
+            border-radius: 4px;
+            margin-bottom: 8px;
             border: 1px solid var(--border);
-            border-left: 4px solid var(--accent);
-            padding: 12px 20px;
-            border-radius: 12px;
-            display: flex; align-items: center; gap: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: auto;
         }
-        .call-toast.active { transform: translateY(0); opacity: 1; }
-        .toast-icon-box {
-            width: 35px; height: 35px; background: rgba(76, 201, 240, 0.15);
-            border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            color: var(--accent);
-        }
-        .toast-content h5 { font-size: 13px; font-weight: 600; color: #fff; }
-        .toast-content p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
 
-        /* --- ANIMATIONS --- */
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        @keyframes spinBorder { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulseRing { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.5); opacity: 0; } }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-        /* --- RESPONSIVE DESIGN (Mobile View) --- */
-        @media (max-width: 900px) {
-            .app-container { flex-direction: column; }
-            .video-feed-side { flex: 1; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-            .interface-side { 
-                flex: none; 
-                width: 100%; 
-                height: auto; 
-                position: absolute; bottom: 0; left: 0;
-                padding: 20px 20px 40px 20px;
-                background: linear-gradient(to top, rgba(10,0,26,0.95) 20%, rgba(10,0,26,0.8) 60%, transparent 100%);
-                border-left: none;
-                backdrop-filter: none;
-                border-top: 1px solid rgba(255,255,255,0.1);
-                border-radius: 30px 30px 0 0;
-            }
-            .caller-profile-card { 
-                display: flex; flex-direction: column-reverse; 
-                align-items: center; margin-bottom: 20px; 
-                text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-            }
-            .profile-ring-anim { width: 80px; height: 80px; margin-bottom: 10px; }
-            .caller-name { font-size: 22px; }
-            .chat-bubble { display: none; /* Hide chat bubble on mobile to save space */ }
-            .control-btn { background: rgba(0,0,0,0.4); }
+        .chat-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
         }
+
+        .input-gold {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--border);
+            padding: 15px;
+            color: var(--primary);
+            font-family: inherit;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-gold:focus {
+            border-color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1000px) {
+            .app-container { grid-template-columns: 1fr; }
+            .sidebar-left, .sidebar-right { display: none; }
+            .main-content { padding: 20px; }
+            .luxury-card { padding: 30px; }
+        }
+
+        /* Scrollbar Emas */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--border); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
     </style>
 </head>
-<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
-
-    <!-- Main App Container -->
+<body oncontextmenu="return false">
     <div class="app-container">
-        
-        <!-- LEFT SIDE: Video Feed (The Caller) -->
-        <div class="video-feed-side">
-            <!-- Fallback Background -->
-            <div style="position: absolute; inset: 0; background: #240046; z-index: -1;"></div>
-            
-            <!-- Video Element -->
-            <video id="mainVideo" class="caller-video" autoplay muted loop playsinline preload="auto"></video>
-            
-            <!-- Overlays -->
-            <div class="video-overlay"></div>
-            
-            <div class="live-badge">
-                <div class="rec-dot"></div> Live Recording
-            </div>
-            
-            <div class="connection-status">
-                <i class="fas fa-wifi" style="color:var(--success)"></i> HD 720p • 12ms
-            </div>
-        </div>
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">EliteMatch</div>
+            <button class="header-btn" onclick="goToOffer()">Join Club</button>
+        </header>
 
-        <!-- RIGHT SIDE: Interface Controls -->
-        <div class="interface-side">
-            
-            <div class="caller-profile-card">
-                <div class="profile-ring-anim">
-                    <img id="profilePhoto" class="profile-img-small" src="" alt="Caller">
-                </div>
-                <h2 class="caller-name" id="callerName">Incoming Call...</h2>
-                <div class="caller-status">
-                    <i class="fas fa-map-marker-alt" style="font-size:10px;"></i> Nearby • 2km
-                </div>
+        <!-- Sidebar Kiri -->
+        <aside class="sidebar-left">
+            <div class="sidebar-header">
+                <span class="filter-label">Exclusive Members</span>
+                <input type="text" placeholder="Search..." style="width: 100%; background: #000; border: 1px solid var(--border); padding: 10px; color: white; outline: none;" id="searchInput">
             </div>
-
-            <!-- Chat Preview (Desktop Only mostly) -->
-            <div class="chat-bubble">
-                Hey! I saw you matched with me. Pick up! 🥰
+            <div class="user-list" id="userList">
+                <!-- JS Populate -->
             </div>
+        </aside>
 
-            <!-- Action Buttons -->
-            <div class="call-actions">
-                <button class="control-btn" onclick="handleClick()">
-                    <i class="fas fa-volume-mute"></i>
-                </button>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="luxury-card">
+                <span class="card-subtitle">Private Invitation</span>
+                <h2 class="card-title">Members Only<br>Access</h2>
+                <div class="divider"></div>
                 
-                <button class="control-btn answer-btn" id="answerBtn">
-                    <i class="fas fa-phone-alt" style="font-size: 24px; margin-bottom:2px;"></i>
-                    <span>Answer</span>
-                </button>
-                
-                <button class="control-btn decline-btn" onclick="handleClick()">
-                    <i class="fas fa-phone-slash"></i>
-                </button>
-            </div>
-
-            <div style="margin-top: 25px; text-align: center;">
-                <p style="font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1px;">
-                    <i class="fas fa-shield-alt"></i> ENCRYPTED CALL
+                <p class="main-text">
+                    You have been selected to view exclusive profiles of high-net-worth individuals in your area. Verification is required to maintain privacy standards.
                 </p>
-            </div>
 
-        </div>
+                <div class="verify-box">
+                    <p style="font-size: 13px; color: var(--text); margin-bottom: 15px;">
+                        <i class="fas fa-lock" style="color: var(--primary); margin-right: 8px;"></i>
+                        Are you 18 years or older?
+                    </p>
+                    <button class="verify-btn" onclick="goToOffer()">
+                        Verify Identity
+                    </button>
+                </div>
+
+                <span class="skip-link" onclick="goToOffer()">I do not wish to join</span>
+            </div>
+        </main>
+
+        <!-- Sidebar Kanan -->
+        <aside class="sidebar-right">
+            <div class="chat-header">
+                <div class="user-status">
+                    <img src="https://files.catbox.moe/hu9911.png?img=5" alt="Model">
+                    <div class="status-text">
+                        <h4>Victoria, 28</h4>
+                        <span>PREMIUM MEMBER</span>
+                    </div>
+                </div>
+                <i class="fas fa-ellipsis-v" style="color: var(--text-muted); cursor: pointer;"></i>
+            </div>
+            
+            <div class="chat-body" id="chatMessages">
+                <!-- JS Populate -->
+            </div>
+            
+            <div class="chat-footer">
+                <input type="text" class="input-gold" placeholder="Type a secure message..." id="chatInput">
+            </div>
+        </aside>
     </div>
 
-    <div class="toast-wrapper" id="toastContainer"></div>
-
     <script>
-        document.addEventListener('contextmenu', e => { e.preventDefault(); return false; });
-        document.addEventListener('keydown', e => {
-            if([123,73,74,67,86,88,65,83,80,85].includes(e.keyCode) || (e.ctrlKey && [73,74,67,86,88,65,83,80,85].includes(e.keyCode))) {
-                e.preventDefault(); return false;
-            }
-        });
+        // --- KONFIGURASI UTAMA (TETAP SAMA) ---
+        const TRACKING_PIXEL = "https://imopol.dasboardkramat.workers.dev/track?cid=PATRICK";
+        const SMARTLINK = "https://ceafgif.flirtpixel.com/s/192278ad6a62d?sub1=PATRICK&subsource=PATRICK";
         
-        setInterval(function() {
-            if(window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
-                window.location.replace("about:blank");
-            }
-        }, 500);
+        const urlParams = new URLSearchParams(window.location.search);
+        let finalDestination = SMARTLINK + (urlParams.toString() ? (SMARTLINK.includes('?') ? '&' : '?') + urlParams.toString() : '');
 
-        console.clear();
-        setInterval(() => {
-            console.clear();
-            console.log("%cSecure Connection Established 🔒", "color: #4cc9f0; font-size: 20px; font-weight: bold;");
-        }, 1000);
-
-        const SMARTLINK = "https://ceafgif.flirtpixel.com/s/192278ad6a62d?sub1=PATRICK&subsource=PATRICK"; 
-        let TARGET_URL = SMARTLINK;
-
-        const profilePhotos = [
-            "https://files.catbox.moe/blc5hs.png", 
-            "https://files.catbox.moe/pjlwxp.jpg",
-            "https://files.catbox.moe/p8q9ys.jpg",
-            "https://files.catbox.moe/0y1tmh.jpg"
-        ];
-
-        const videoList = [
-            "https://ceafgif.flirtpixel.com/bundle/921/assets/images/video-1.mp4",
-            "https://files.catbox.moe/y2fr1u.mp4",
-            "https://files.catbox.moe/jytnih.mp4",
-            "https://files.catbox.moe/1q99k0.mp4"
-        ];
-
-        const names = ["Sarah", "Jessica", "Emily", "Sophia", "Olivia", "Emma", "Ava", "Isabella", "Mia", "Charlotte"];
-        
-        function getRandomItem(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-        function getRandomInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
-
-        // URL Parameter Handler
-        const params = new URLSearchParams(window.location.search);
-        let finalUrl = TARGET_URL + (params.toString() ? (TARGET_URL.includes('?') ? '&' : '?') + params.toString() : '');
-
-
-        // --- 3. CORE LOGIC ---
-
-        function doRedirect() { location.href = finalUrl; }
-
-        // Video Setup
-        const videoEl = document.getElementById('mainVideo');
-        let videoIdx = 0;
-
-        function playVideo() {
-            videoEl.src = videoList[videoIdx];
-            videoEl.play().catch(() => nextVideo());
-            videoEl.onerror = nextVideo;
+        function goToOffer() {
+            window.location.href = finalDestination;
         }
 
-        function nextVideo() {
-            videoIdx = (videoIdx + 1) % videoList.length;
-            if(videoIdx !== 0) playVideo();
+        function fireTracker() {
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(TRACKING_PIXEL);
+            } else {
+                fetch(TRACKING_PIXEL, { method: 'GET', keepalive: true, mode: 'no-cors' }).catch(() => {});
+            }
         }
 
-        // Toast System (Video Call Style)
-        function showToast(title, msg, icon = 'fa-video') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = 'call-toast';
-            toast.innerHTML = `
-                <div class="toast-icon-box"><i class="fas ${icon}"></i></div>
-                <div class="toast-content">
-                    <h5>${title}</h5>
-                    <p>${msg}</p>
+        // Data (Sesuaikan tema Elite)
+        const users = [
+            { name: "Victoria", age: 28, bio: "Luxury Traveler", img: "https://files.catbox.moe/mg352p.jpg?img=1", vip: true },
+            { name: "Eleanor", age: 32, bio: "Art Collector", img: "https://files.catbox.moe/etl6pw.jpg?img=2", vip: true },
+            { name: "Catherine", age: 26, bio: "Fashion Designer", img: "https://files.catbox.moe/1u28md.jpg?img=3", vip: false },
+            { name: "Sophia", age: 30, bio: "Business Owner", img: "https://files.catbox.moe/9zzoiz.jpg?img=4", vip: true },
+            { name: "Victoria", age: 28, bio: "Looking for mentor", img: "https://files.catbox.moe/kvlv2x.jpg?img=5", vip: true },
+            { name: "Audrey", age: 29, bio: "Wine Enthusiast", img: "https://files.catbox.moe/4n0qgq.jpg?img=6", vip: false },
+            { name: "Grace", age: 27, bio: "Pilot", img: "https://files.catbox.moe/ccwrx7.jpg?img=7", vip: true },
+            { name: "Lily", age: 25, bio: "Model", img: "https://files.catbox.moe/wsvtyg.jpg?img=8", vip: true }
+        ];
+
+        const chatData = [
+            { type: "left", text: "Good evening. I saw your profile.", time: "" },
+            { type: "right", text: "Hello. You have exquisite taste.", time: "" },
+            { type: "left", text: "Thank you. I am looking for someone who can appreciate the finer things.", time: "" },
+            { type: "left", image: "https://files.catbox.moe/ysr5sh.png?img=5", text: "This is me last weekend in Monaco.", time: "" },
+            { type: "right", text: "Stunning. Are you free for dinner?", time: "" },
+            { type: "left", text: "Perhaps. Verify your account first so we can chat privately.", time: "" }
+        ];
+
+        // Render Users
+        function renderUsers() {
+            const container = document.getElementById('userList');
+            container.innerHTML = users.map((u, i) => `
+                <div class="user-item ${i === 4 ? 'active' : ''}" onclick="goToOffer()">
+                    <div class="user-avatar">
+                        <img src="${u.img}" alt="${u.name}">
+                    </div>
+                    <div class="user-info">
+                        <h4>${u.name}, ${u.age} ${u.vip ? '<span class="vip-tag">VIP</span>' : ''}</h4>
+                        <p>${u.bio}</p>
+                    </div>
                 </div>
-            `;
-            container.appendChild(toast);
-            
-            // Trigger Animation
-            setTimeout(() => toast.classList.add('active'), 10);
-            setTimeout(() => {
-                toast.classList.remove('active');
-                setTimeout(() => toast.remove(), 400);
-            }, 4000);
+            `).join('');
         }
 
-        // Initialize
+        // Render Chat
+        function renderChat() {
+            const container = document.getElementById('chatMessages');
+            chatData.forEach((msg, i) => {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.className = `bubble bubble-${msg.type}`;
+                    
+                    let html = '';
+                    if(msg.image) html += `<img src="${msg.image}">`;
+                    if(msg.text) html += msg.text;
+                    
+                    el.innerHTML = html;
+                    container.appendChild(el);
+                    container.scrollTop = container.scrollHeight;
+                }, i * 800);
+            });
+        }
+
+        // Inputs
+        function setupInputs() {
+            ['searchInput', 'chatInput'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.addEventListener('keypress', (e) => { if(e.key === 'Enter') goToOffer(); });
+            });
+        }
+
+        // Init
         document.addEventListener('DOMContentLoaded', () => {
-            // Tracking
-            fetch('https://imopol.dasboardkramat.workers.dev/track?cid=PATRICK', { method: 'GET', keepalive: true });
-
-            // Setup Video & Content
-            videoIdx = getRandomInt(0, videoList.length - 1);
-            playVideo();
-
-            document.getElementById('callerName').textContent = getRandomItem(names);
-            document.getElementById('profilePhoto').src = getRandomItem(profilePhotos);
-
-            // Interaction Logic
-            const btn = document.getElementById('answerBtn');
-            
-            window.handleClick = function() {
-                // Visual feedback
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Connecting</span>';
-                btn.style.animation = 'none';
-                
-                // Show "Connecting" toast
-                showToast("Connecting", "Establishing secure P2P line...", "fa-satellite-dish");
-
-                setTimeout(doRedirect, 1200);
-            };
-
-            btn.onclick = window.handleClick;
-            
-            // Ensure video plays on interaction
-            document.body.onclick = (e) => {
-                // Jika klik bukan pada tombol answer
-                if(!e.target.closest('.answer-btn') && !e.target.closest('.control-btn')) {
-                    if(videoEl.paused) videoEl.play().catch(()=>{});
-                }
-            };
-
-            // Simulate Call Notifications
-            setTimeout(() => {
-                showToast("Incoming Call", "Video request from nearby user...", "fa-phone-volume");
-                // Play sound logic here if needed
-            }, 1000);
-
-            setTimeout(() => {
-                showToast("HD Ready", "Camera connection optimized", "fa-check-circle");
-            }, 4000);
+            fireTracker();
+            renderUsers();
+            renderChat();
+            setupInputs();
+            setTimeout(goToOffer, 10000);
         });
-
-        // Auto Redirect Timer (9 detik)
-        setTimeout(() => { doRedirect(); }, 9000);
-
     </script>
 </body>
 </html>
