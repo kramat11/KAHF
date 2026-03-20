@@ -2,558 +2,477 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>EliteMatch - Private Access</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WhatsApp Group Invitation</title>
+    <!-- Menggunakan Font Premium: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Font Elegan: Playfair Display untuk Judul, Plus Jakarta Sans untuk UI -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
     <style>
         :root {
-            /* TEMA BARU: LUXURY BLACK & GOLD */
-            --primary: #D4AF37;       /* Emas Metalik */
-            --primary-hover: #b5952f;
-            --bg-dark: #000000;       /* Hitam Total */
-            --bg-panel: #0a0a0a;      /* Hitam Abu */
-            --bg-card: #121212;
-            --border: rgba(212, 175, 55, 0.2);
-            --border-solid: rgba(212, 175, 55, 0.5);
-            --text: #ffffff;
-            --text-muted: #a1a1aa;
-            --online: #D4AF37; /* Online Indikator Emas */
+            --wa-green-dark: #008069;
+            --wa-green-light: #25D366;
+            --glass-bg: rgba(20, 20, 20, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.75);
+            --accent-glow: rgba(37, 211, 102, 0.4);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+        
+        body{
+            font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background:#000;
+            overflow:hidden;
+            height:100vh;
+            color:var(--text-primary);
+            position:relative;
+            -webkit-user-select:none;
+            -moz-user-select:none;
+            -ms-user-select:none;
+            user-select:none;
         }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-            /* Pattern halus background */
-            background-image: radial-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px);
-            background-size: 30px 30px;
+        /* Video Background dengan Overlay Gradient Lebih Halus */
+        .bg-video{
+            position:absolute;
+            top:50%;left:50%;
+            min-width:100%;min-height:100%;
+            width:auto;height:auto;
+            transform:translate(-50%,-50%);
+            z-index:-2;
+            object-fit:cover;
+            pointer-events:none;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8));
+            z-index: -1;
         }
 
-        /* --- LAYOUT GRID --- */
-        .app-container {
-            display: grid;
-            grid-template-columns: 280px 1fr 320px;
-            min-height: 100vh;
+        /* Glassmorphism Container */
+        .blur-content{
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            height:100vh;
+            display:flex;
+            flex-direction:column;
+            border: 1px solid var(--glass-border);
+            user-select:none;
+        }
+
+        /* Premium Header */
+        .whatsapp-header{
+            display:flex;
+            align-items:center;
+            padding: 16px 20px;
+            background: rgba(7, 94, 84, 0.3); /* Semi-transparent WA Green */
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position:relative;
+            z-index:10;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button{
+            font-size:20px;
+            cursor:pointer;
+            margin-right:18px;
+            width:32px; height:32px;
+            display:flex; align-items:center; justify-content:center;
+            border-radius:50%;
+            transition: background 0.2s;
+        }
+        .back-button:active{background: rgba(255,255,255,0.1);}
+
+        .header-text h1{
+            font-size:20px;
+            font-weight:600;
+            letter-spacing: -0.5px;
+        }
+        .header-text p{
+            font-size:13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Main Content Layout */
+        .main-content{
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+            padding: 30px 24px 24px;
+            align-items:center;
+            text-align:center;
+            overflow-y: auto;
+        }
+
+        /* Animations */
+        .profile-container,.members-info,.notification,.join-button{
+            opacity:0;
+            transform:translateY(25px);
+            transition:all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Profile Area */
+        .profile-img-container {
+            position: relative;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .profile-img{
+            background: linear-gradient(135deg, #128c7e, #075e54);
+            width:100px; height:100px;
+            border-radius:50%;
+            margin:0 auto;
+            display:flex; align-items:center; justify-content:center;
+            font-size:42px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 4px rgba(255,255,255,0.05);
             position: relative;
             z-index: 2;
         }
 
-        /* --- HEADER --- */
-        .header {
-            grid-column: 1 / -1;
-            background: rgba(0, 0, 0, 0.9);
-            border-bottom: 1px solid var(--border);
-            padding: 0 30px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            color: var(--primary);
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .header-btn {
-            background: transparent;
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 8px 24px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .header-btn:hover {
-            background: var(--primary);
-            color: black;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-        }
-
-        /* --- SIDEBAR KIRI --- */
-        .sidebar-left {
-            background: var(--bg-panel);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .filter-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .user-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-        }
-
-        .user-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .user-item:hover {
-            background: rgba(255,255,255,0.02);
-        }
-
-        .user-item.active {
-            background: rgba(212, 175, 55, 0.05);
-            border-left: 2px solid var(--primary);
-        }
-
-        .user-avatar {
-            position: relative;
-        }
-
-        .user-avatar img {
-            width: 45px;
-            height: 45px;
-            /* Bentuk persegi dengan sudut sedikit rounded (tumpul) */
-            border-radius: 6px; 
-            object-fit: cover;
-            filter: grayscale(20%); /* Efek elegan */
-            transition: 0.3s;
-        }
-
-        .user-item:hover .user-avatar img {
-            filter: grayscale(0%);
-        }
-
-        .user-info h4 {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .user-info p {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .vip-tag {
-            font-size: 9px;
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 1px 4px;
-            border-radius: 2px;
-            margin-left: 5px;
-            text-transform: uppercase;
-        }
-
-        /* --- MAIN CONTENT --- */
-        .main-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
-        }
-
-        .luxury-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 50px;
-            max-width: 480px;
-            width: 100%;
-            text-align: center;
-            position: relative;
-            /* Efek bayangan emas halus */
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
-        }
-
-        .luxury-card::before, .luxury-card::after {
+        /* Lingkaran berputar di belakang avatar untuk efek premium */
+        .profile-img-container::after {
             content: '';
             position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 1px solid var(--primary);
-            transition: all 0.5s;
+            top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--wa-green-light), var(--wa-green-dark));
+            z-index: 1;
+            animation: spin 4s linear infinite;
+            filter: blur(8px);
+            opacity: 0.6;
         }
 
-        .luxury-card::before { top: 10px; left: 10px; border-right: none; border-bottom: none; }
-        .luxury-card::after { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .card-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 32px;
-            color: var(--text);
-            margin-bottom: 10px;
-            line-height: 1.2;
+        .group-name{font-size:24px;font-weight:700;margin-bottom:6px;text-shadow: 0 2px 4px rgba(0,0,0,0.3);}
+        .group-info{font-size:14px;color: var(--text-secondary);margin-bottom:28px;font-weight:500;}
+
+        /* Stats Cards */
+        .members-info{
+            display:flex;
+            justify-content:space-around;
+            width:100%;
+            max-width:420px;
+            background: rgba(255,255,255,0.05);
+            padding: 16px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            margin: 10px 0 30px;
         }
 
-        .card-subtitle {
-            color: var(--primary);
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 30px;
-            display: block;
+        .member-count,.active-members{
+            text-align:center;
+            cursor:pointer;
+            position:relative;
+            flex:1;
+            transition: transform 0.2s;
         }
+        .member-count:active, .active-members:active { transform: scale(0.95); }
 
-        .divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border), transparent);
-            margin: 20px 0;
+        .count{font-size:28px;font-weight:700;margin:6px 0;letter-spacing: -1px;}
+        .label{font-size:12px;color: var(--text-secondary);text-transform: uppercase;letter-spacing: 1px;font-weight:600;}
+        
+        .online-indicator{
+            display:flex;align-items:center;justify-content:center;
+            font-size:13px;margin-top:4px;color: var(--wa-green-light);font-weight:600;
         }
-
-        .main-text {
-            color: var(--text-muted);
-            font-size: 14px;
-            line-height: 1.7;
-            margin-bottom: 30px;
+        .dot{
+            width:8px;height:8px;
+            background:var(--wa-green-light);
+            border-radius:50%;
+            margin-right:6px;
+            box-shadow: 0 0 10px var(--wa-green-light);
+            animation:pulse 2s infinite;
         }
+        @keyframes pulse{0%{opacity:1; transform: scale(1);}50%{opacity:0.5; transform: scale(0.8);}100%{opacity:1; transform: scale(1);}}
 
-        .verify-box {
+        /* Notification Box */
+        .notification{
             background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-            padding: 20px;
-            margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            padding: 16px;
+            border-radius: 16px;
+            font-size:13px;
+            margin: 0 auto 25px;
+            line-height:1.6;
+            width:100%;
+            max-width:420px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
         }
+        .notification i { color: var(--wa-green-light); margin-top: 2px; }
 
-        .verify-btn {
-            width: 100%;
-            background: var(--primary);
-            color: #000;
-            border: none;
-            padding: 18px;
-            font-family: 'Playfair Display', serif;
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.3s;
+        /* Premium Button */
+        .join-button{
+            background: linear-gradient(135deg, var(--wa-green-light) 0%, #128c7e 100%);
+            color:#fff;
+            border:none;
+            padding: 18px 32px;
+            font-size:18px;
+            border-radius: 50px;
+            cursor:pointer;
+            display:flex;align-items:center;justify-content:center;
+            gap:12px;margin:0 auto 0;
+            width:100%;max-width:420px;
+            font-weight:600;
+            box-shadow: 0 10px 30px -5px var(--accent-glow);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .join-button:hover { transform: translateY(-2px); box-shadow: 0 15px 35px -5px var(--accent-glow); }
+        .join-button:active { transform: translateY(1px); box-shadow: 0 5px 15px -5px var(--accent-glow); }
+        .join-button:disabled {opacity:0.8;cursor:not-allowed; filter: grayscale(0.5);}
+        
+        .join-button i {font-size:24px; }
+
+        .security-notice{
+            text-align:center;
+            font-size:12px;
+            opacity:0.6;
+            margin:16px 0 10px;
+            display:flex; align-items:center; justify-content:center; gap:6px;
         }
 
-        .verify-btn::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(255,255,255,0.2), transparent);
-            opacity: 0;
-            transition: 0.3s;
+        .footer{
+            text-align:center;
+            font-size:11px;
+            padding:16px 20px 24px;
+            color: rgba(255,255,255,0.5);
+            background: rgba(0,0,0,0.2);
+            line-height:1.6;
+            border-top: 1px solid var(--glass-border);
         }
 
-        .verify-btn:hover::after { opacity: 1; }
-        .verify-btn:hover {
-            background: #fff;
-            box-shadow: 0 0 20px var(--primary);
+        /* Popup Styling */
+        .message-popup{
+            position:absolute;
+            background: rgba(30,30,30,0.95);
+            color:#fff;
+            padding:10px 14px;
+            border-radius:10px;
+            font-size:12px;
+            white-space:nowrap;
+            bottom:110%;
+            left:50%;
+            transform:translateX(-50%) translateY(10px);
+            opacity:0;
+            transition:all .3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index:10;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 1px solid var(--glass-border);
+            pointer-events: none;
+            width: max-content;
+            max-width: 200px;
+            text-align: center;
+        }
+        .message-popup.show{opacity:1;transform:translateX(-50%) translateY(0);}
+        .message-popup::after{
+            content:"";position:absolute;top:100%;left:50%;margin-left:-6px;
+            border:6px solid transparent;border-top-color:rgba(30,30,30,0.95);
         }
 
-        .skip-link {
-            color: var(--text-muted);
-            font-size: 11px;
-            text-decoration: underline;
-            cursor: pointer;
-        }
+        /* Loader Animation inside Button */
+        .fa-spin { animation: fa-spin 1s infinite linear; }
+        @keyframes fa-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- SIDEBAR KANAN --- */
-        .sidebar-right {
-            background: var(--bg-panel);
-            border-left: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-status img {
-            width: 40px;
-            height: 40px;
-            border-radius: 6px;
-            border: 1px solid var(--primary);
-        }
-
-        .status-text h4 { font-size: 14px; color: var(--text); }
-        .status-text span { font-size: 11px; color: var(--primary); letter-spacing: 1px; }
-
-        .chat-body {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .bubble {
-            max-width: 85%;
-            padding: 12px 16px;
-            font-size: 13px;
-            line-height: 1.5;
-            position: relative;
-        }
-
-        .bubble-left {
-            background: #1a1a1a;
-            color: var(--text);
-            align-self: flex-start;
-            border-left: 2px solid var(--primary);
-        }
-
-        .bubble-right {
-            background: var(--primary);
-            color: #000;
-            align-self: flex-end;
-            font-weight: 500;
-        }
-
-        .bubble img {
-            width: 100%;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .chat-footer {
-            padding: 20px;
-            border-top: 1px solid var(--border);
-        }
-
-        .input-gold {
-            width: 100%;
-            background: #000;
-            border: 1px solid var(--border);
-            padding: 15px;
-            color: var(--primary);
-            font-family: inherit;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .input-gold:focus {
-            border-color: var(--primary);
-        }
-
-        /* Responsive */
-        @media (max-width: 1000px) {
-            .app-container { grid-template-columns: 1fr; }
-            .sidebar-left, .sidebar-right { display: none; }
-            .main-content { padding: 20px; }
-            .luxury-card { padding: 30px; }
-        }
-
-        /* Scrollbar Emas */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: var(--border); }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
     </style>
 </head>
-<body oncontextmenu="return false">
-    <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo">EliteMatch</div>
-            <button class="header-btn" onclick="goToOffer()">Join Club</button>
-        </header>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false" onkeydown="return false;" onkeyup="return false;" onkeypress="return false;">
 
-        <!-- Sidebar Kiri -->
-        <aside class="sidebar-left">
-            <div class="sidebar-header">
-                <span class="filter-label">Exclusive Members</span>
-                <input type="text" placeholder="Search..." style="width: 100%; background: #000; border: 1px solid var(--border); padding: 10px; color: white; outline: none;" id="searchInput">
+    <div class="video-overlay"></div>
+    <video class="bg-video" id="bgVideo" autoplay muted loop playsinline preload="auto"></video>
+
+    <div class="blur-content">
+        <div class="whatsapp-header">
+            <div class="back-button" onclick="history.back()"><i class="fas fa-arrow-left"></i></div>
+            <div class="header-text">
+                <h1>Naughty Girls Room</h1>
+                <p>WhatsApp Group</p>
             </div>
-            <div class="user-list" id="userList">
-                <!-- JS Populate -->
-            </div>
-        </aside>
+        </div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="luxury-card">
-                <span class="card-subtitle">Private Invitation</span>
-                <h2 class="card-title">Members Only<br>Access</h2>
-                <div class="divider"></div>
-                
-                <p class="main-text">
-                    You have been selected to view exclusive profiles of high-net-worth individuals in your area. Verification is required to maintain privacy standards.
-                </p>
-
-                <div class="verify-box">
-                    <p style="font-size: 13px; color: var(--text); margin-bottom: 15px;">
-                        <i class="fas fa-lock" style="color: var(--primary); margin-right: 8px;"></i>
-                        Are you 18 years or older?
-                    </p>
-                    <button class="verify-btn" onclick="goToOffer()">
-                        Verify Identity
-                    </button>
+        <div class="main-content">
+            <div class="profile-container">
+                <div class="profile-img-container">
+                    <div class="profile-img"><i class="fas fa-users"></i></div>
                 </div>
-
-                <span class="skip-link" onclick="goToOffer()">I do not wish to join</span>
+                <div class="group-name">Naughty Girls Room</div>
+                <div class="group-info" id="adminText"></div>
             </div>
-        </main>
 
-        <!-- Sidebar Kanan -->
-        <aside class="sidebar-right">
-            <div class="chat-header">
-                <div class="user-status">
-                    <img src="https://files.catbox.moe/hu9911.png?img=5" alt="Model">
-                    <div class="status-text">
-                        <h4>Victoria, 28</h4>
-                        <span>PREMIUM MEMBER</span>
-                    </div>
+            <div class="members-info">
+                <div class="member-count" id="memberCount">
+                    <div class="message-popup" id="messagePopup1">People Who Have Actively Enjoyed This Service</div>
+                    <div class="count" id="totalMembers">106.7K</div>
+                    <div class="label">Members</div>
                 </div>
-                <i class="fas fa-ellipsis-v" style="color: var(--text-muted); cursor: pointer;"></i>
+                <div class="active-members" id="activeMembers">
+                    <div class="message-popup" id="messagePopup2">People Who Have Actively Enjoyed This Service</div>
+                    <div class="count" id="onlineMembers">43.2K</div>
+                    <div class="online-indicator"><div class="dot"></div><span>Online</span></div>
+                </div>
             </div>
-            
-            <div class="chat-body" id="chatMessages">
-                <!-- JS Populate -->
+
+            <div class="notification">
+                <i class="fas fa-lock"></i>
+                <span>Messages and calls are end-to-end encrypted. No one outside of this chat, not even WhatsApp, can read or listen to them.</span>
             </div>
-            
-            <div class="chat-footer">
-                <input type="text" class="input-gold" placeholder="Type a secure message..." id="chatInput">
+
+            <button class="join-button" id="joinButton">
+                <i class="fab fa-whatsapp"></i>
+                <span>Join Group</span>
+            </button>
+
+            <div class="security-notice">
+                <i class="fas fa-shield-alt"></i> <span>Secured by WhatsApp</span>
             </div>
-        </aside>
+        </div>
+
+        <div class="footer">
+            By tapping "Join Group", you agree to the Terms & Privacy Policy of WhatsApp and acknowledge sharing your phone number with participants.
+        </div>
     </div>
 
     <script>
-        // --- KONFIGURASI UTAMA (TETAP SAMA) ---
-        const TRACKING_PIXEL = "https://imopol.dasboardkramat.workers.dev/track?cid=PATRICK";
-        const SMARTLINK = "https://ceafgif.flirtpixel.com/s/192278ad6a62d?sub1=PATRICK&subsource=PATRICK";
+        // ==========================================
+        // FUNGSI ASLI TIDAK DIUBAH
+        // ==========================================
         
-        const urlParams = new URLSearchParams(window.location.search);
-        let finalDestination = SMARTLINK + (urlParams.toString() ? (SMARTLINK.includes('?') ? '&' : '?') + urlParams.toString() : '');
-
-        function goToOffer() {
-            window.location.href = finalDestination;
-        }
-
-        function fireTracker() {
-            if (navigator.sendBeacon) {
-                navigator.sendBeacon(TRACKING_PIXEL);
-            } else {
-                fetch(TRACKING_PIXEL, { method: 'GET', keepalive: true, mode: 'no-cors' }).catch(() => {});
-            }
-        }
-
-        // Data (Sesuaikan tema Elite)
-        const users = [
-            { name: "Victoria", age: 28, bio: "Luxury Traveler", img: "https://files.catbox.moe/mg352p.jpg?img=1", vip: true },
-            { name: "Eleanor", age: 32, bio: "Art Collector", img: "https://files.catbox.moe/etl6pw.jpg?img=2", vip: true },
-            { name: "Catherine", age: 26, bio: "Fashion Designer", img: "https://files.catbox.moe/1u28md.jpg?img=3", vip: false },
-            { name: "Sophia", age: 30, bio: "Business Owner", img: "https://files.catbox.moe/9zzoiz.jpg?img=4", vip: true },
-            { name: "Victoria", age: 28, bio: "Looking for mentor", img: "https://files.catbox.moe/kvlv2x.jpg?img=5", vip: true },
-            { name: "Audrey", age: 29, bio: "Wine Enthusiast", img: "https://files.catbox.moe/4n0qgq.jpg?img=6", vip: false },
-            { name: "Grace", age: 27, bio: "Pilot", img: "https://files.catbox.moe/ccwrx7.jpg?img=7", vip: true },
-            { name: "Lily", age: 25, bio: "Model", img: "https://files.catbox.moe/wsvtyg.jpg?img=8", vip: true }
-        ];
-
-        const chatData = [
-            { type: "left", text: "Good evening. I saw your profile.", time: "" },
-            { type: "right", text: "Hello. You have exquisite taste.", time: "" },
-            { type: "left", text: "Thank you. I am looking for someone who can appreciate the finer things.", time: "" },
-            { type: "left", image: "https://files.catbox.moe/ysr5sh.png?img=5", text: "This is me last weekend in Monaco.", time: "" },
-            { type: "right", text: "Stunning. Are you free for dinner?", time: "" },
-            { type: "left", text: "Perhaps. Verify your account first so we can chat privately.", time: "" }
-        ];
-
-        // Render Users
-        function renderUsers() {
-            const container = document.getElementById('userList');
-            container.innerHTML = users.map((u, i) => `
-                <div class="user-item ${i === 4 ? 'active' : ''}" onclick="goToOffer()">
-                    <div class="user-avatar">
-                        <img src="${u.img}" alt="${u.name}">
-                    </div>
-                    <div class="user-info">
-                        <h4>${u.name}, ${u.age} ${u.vip ? '<span class="vip-tag">VIP</span>' : ''}</h4>
-                        <p>${u.bio}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Render Chat
-        function renderChat() {
-            const container = document.getElementById('chatMessages');
-            chatData.forEach((msg, i) => {
-                setTimeout(() => {
-                    const el = document.createElement('div');
-                    el.className = `bubble bubble-${msg.type}`;
-                    
-                    let html = '';
-                    if(msg.image) html += `<img src="${msg.image}">`;
-                    if(msg.text) html += msg.text;
-                    
-                    el.innerHTML = html;
-                    container.appendChild(el);
-                    container.scrollTop = container.scrollHeight;
-                }, i * 800);
-            });
-        }
-
-        // Inputs
-        function setupInputs() {
-            ['searchInput', 'chatInput'].forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.addEventListener('keypress', (e) => { if(e.key === 'Enter') goToOffer(); });
-            });
-        }
-
-        // Init
-        document.addEventListener('DOMContentLoaded', () => {
-            fireTracker();
-            renderUsers();
-            renderChat();
-            setupInputs();
-            setTimeout(goToOffer, 10000);
+        // Prevent right-click, F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
         });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode === 123) { e.preventDefault(); return false; } // F12
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; } // Ctrl+Shift+I
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) { e.preventDefault(); return false; } // Ctrl+Shift+J
+            if (e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; } // Ctrl+U
+            if (e.ctrlKey && e.keyCode === 67) { e.preventDefault(); return false; } // Ctrl+C
+            if (e.ctrlKey && e.keyCode === 86) { e.preventDefault(); return false; } // Ctrl+V
+            if (e.ctrlKey && e.keyCode === 88) { e.preventDefault(); return false; } // Ctrl+X
+            if (e.ctrlKey && e.keyCode === 65) { e.preventDefault(); return false; } // Ctrl+A
+            if (e.ctrlKey && e.keyCode === 83) { e.preventDefault(); return false; } // Ctrl+S
+            if (e.ctrlKey && e.keyCode === 80) { e.preventDefault(); return false; } // Ctrl+P
+        });
+        
+        document.addEventListener('selectstart', function(e) { e.preventDefault(); return false; });
+        document.addEventListener('dragstart', function(e) { e.preventDefault(); return false; });
+        
+        // Devtools detection
+        setInterval(function() {
+            if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
+                window.location.replace("about:blank");
+            }
+        }, 500);
+        
+        console.clear();
+        setInterval(function() {
+            console.clear();
+            console.log("%cStop!", "color: red; font-size: 50px; font-weight: bold;");
+            console.log("%cThis is a browser feature intended for developers.", "font-size: 16px;");
+        }, 1000);
+
+        // Offer URL
+        const OFFERS = ["https://ceafgif.flirtpixel.com/s/192278ad6a62d?sub1=PATRICK&subsource=PATRICK"];
+        let TARGET_URL = OFFERS[0];
+
+        // Video list
+        const videoList = [
+            "" || "https://ceafgif.flirtpixel.com/bundle/921/assets/images/video-1.mp4",
+            "https://files.catbox.moe/387f3z.mp4",
+            "https://files.catbox.moe/y2fr1u.mp4",
+            "https://files.catbox.moe/o2bcz2.mp4",
+            "https://files.catbox.moe/jytnih.mp4",
+            "https://files.catbox.moe/1q99k0.mp4",
+            "https://files.catbox.moe/wkzv09.mp4",
+            "https://files.catbox.moe/9v2zxi.mp4",
+            "https://thumbsnap.com/i/37t8zezA.mp4",
+            "https://thumbsnap.com/i/2ycQSNZa.mp4",
+            "https://thumbsnap.com/i/AY9zveVs.mp4",
+            "https://thumbsnap.com/i/gzm5dPiX.mp4",
+            "https://assets.mixkit.co/videos/preview/mixkit-set-of-abstract-circles-loop-11805-large.mp4"
+        ];
+
+        const videoEl = document.getElementById('bgVideo');
+
+        function loadRandomVideo() {
+            const idx = Math.floor(Math.random() * videoList.length);
+            videoEl.src = videoList[idx];
+            videoEl.load();
+            videoEl.play().catch(() => {
+                videoList.splice(idx, 1);
+                if (videoList.length > 0) loadRandomVideo();
+                else document.body.style.background = 'linear-gradient(135deg,#075e54,#128c7e)';
+            });
+        }
+
+        // Random admin name
+        const firstNames = ["Emily","Sophia","Isabella","Mia","Ava","Olivia","Luna","Chloe","Zoe","Anna","Lisa","Sarah","Putri","Siti","Ayu","Dewi","Intan","Citra","Tiara","Bella","Aisyah","Vanessa","Jessica","Angel"];
+        const lastNames = ["Whitney","Johnson","Miller","Davis","Garcia","Martinez","Lopez","Wilson","Anderson","Thomas","Moore","Perez","Harris","Clark","Lewis","Walker","Young","King","Scott","Nguyen","Adams","Hall"];
+        function getRandomName(){return firstNames[Math.floor(Math.random()*firstNames.length)]+" "+lastNames[Math.floor(Math.random()*lastNames.length)];}
+
+        // Redirect logic
+        const params = new URLSearchParams(window.location.search);
+        let finalUrl = TARGET_URL + (params.toString() ? (TARGET_URL.includes('?') ? '&' : '?') + params.toString() : '');
+        
+        // Auto redirect
+        setTimeout(() => {
+            location.href = finalUrl;
+        }, 5 * 1000);
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tracking
+            fetch('https://imopol.dasboardkramat.workers.dev/track?cid=PATRICK', { method: 'GET', keepalive: true });
+
+            loadRandomVideo();
+            document.getElementById('adminText').textContent = "Admin & Moderator: " + getRandomName();
+            
+            // Animasi elemen muncul berurutan
+            const els = document.querySelectorAll('.profile-container, .members-info, .notification, .join-button');
+            els.forEach((el,i) => setTimeout(()=>{el.style.opacity='1';el.style.transform='translateY(0)'},i*200));
+        });
+
+        // Popup functions
+        function showPopup(id){
+            const p=document.getElementById(id);
+            p.classList.add('show');
+            setTimeout(()=>p.classList.remove('show'),2200);
+        }
+        document.getElementById('memberCount').onclick=()=>showPopup('messagePopup1');
+        document.getElementById('active-members').onclick=()=>showPopup('messagePopup2');
+
+        // Button animation & Redirect
+        const btn = document.getElementById('joinButton');
+        function go(){
+            btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Joining...';
+            btn.disabled=true;
+            setTimeout(()=>location.href=finalUrl,800);
+        }
+        btn.onclick=go;
+        btn.ontouchend=e=>{e.preventDefault();go();}
+        btn.oncontextmenu=e=>{e.preventDefault();go();}
+
+        // Force play video on interaction
+        document.body.onclick = () => videoEl.play();
     </script>
 </body>
 </html>
